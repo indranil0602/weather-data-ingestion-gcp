@@ -6,6 +6,7 @@ from datetime import datetime
 from pytz import timezone 
 
 # GCP imports
+
 from google.cloud import storage
 from google.cloud import secretmanager
 from google.cloud import pubsub_v1
@@ -17,7 +18,6 @@ current_date = datetime.now(timezone(TIME_ZONE)).strftime("%Y-%m-%d")
 current_time = datetime.now(timezone(TIME_ZONE)).strftime("%H:%M:%S")
 current_year = datetime.now(timezone(TIME_ZONE)).strftime("%Y")
 
-
 f = open("config.json", "r")
 data = json.load(f)
 
@@ -28,6 +28,7 @@ PUBSUB_LOGGING_TOPIC = 'hourly-weather-data-load-logging-topic'
 PUBSUB_LOGGING_SERVICE = 'Cloud Function'
 
 # defining message data for the pubsub topic
+
 MESSAGE_DATA = {
     "project":PROJECT_ID,
     "service":PUBSUB_LOGGING_SERVICE,
@@ -65,11 +66,11 @@ def create_new_bucket(bucket_name):
     bucket = storage_client.bucket(bucket_name)
     bucket.storage_class = "STANDARD"
     new_bucket = storage_client.create_bucket(bucket, location="ASIA-SOUTH1")
+
     return new_bucket
 
 def get_weather_data(BASE_URL, API_KEY):
-    """ Creating the complete url from base url and API key, 
-    get the data from http end point in json format"""
+    """ Creating the complete url from base url and API key, get the data from http end point in json format"""
 
     COMPLETE_URL = BASE_URL + API_KEY
     response_json = requests.get(url = COMPLETE_URL).json()
@@ -90,7 +91,7 @@ def clean_weather_data(weather_data):
         "main":weather_data.get('weather')[0].get('main') if weather_data.get('weather') else None,
         "description":weather_data.get('weather')[0].get('description') if weather_data.get('weather') else None
     }
-
+    
     response_dict["base"] = weather_data.get("base")
 
     main={}
@@ -124,6 +125,7 @@ def clean_weather_data(weather_data):
     snow={}
     snow["snow_1h"] = weather_data.get('snow').get('1h') if weather_data.get('snow') else None
     snow["snow_3h"] = weather_data.get('snow').get('3h') if weather_data.get('snow') else None
+
     response_dict["snow"]=snow
 
     response_dict["dt"] = current_date
@@ -160,6 +162,7 @@ def publish_massage(project_id, topic_id, message):
 
 def main_pubsub(event, context):
     """ Main function triggered by pubsub mesage """
+
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
 
     if pubsub_message == "collect-weather-data":
@@ -205,4 +208,3 @@ def main_pubsub(event, context):
 
     else:
         print("No bucket created")
-
