@@ -1,4 +1,5 @@
 {
     "project_id":"data-ingestion-project-355102",
-    "secret_name":"openweather-api"
+    "secret_name":"openweather-api",
+    "BASE_URL":"https://api.openweathermap.org/data/2.5/weather?q=Bankura,WB,IN&appid="
 }
