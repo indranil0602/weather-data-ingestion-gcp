@@ -1,0 +1,5 @@
+{
+    "project_id":"data-ingestion-project-355102",
+    "dataset":"raw_weather_data",
+    "table":"weather-data-hourly"
+}
